@@ -7,20 +7,20 @@ public class Puzzle1 : PuzzleBase<IEnumerable<string>, int, int>
 
     private static int SumString(string s)
     {
-        var firstNum = -1;
-        var lastNum = -1;
+        var firstDigit = -1;
+        var lastDigit = -1;
 
         foreach (var c in s)
         {
-            if (!int.TryParse(c.ToString(), out var number)) continue;
-            if (firstNum == -1)
+            if (!int.TryParse(c.ToString(), out var digit)) continue;
+            if (firstDigit == -1)
             {
-                firstNum = number;
+                firstDigit = digit;
             }
-            lastNum = number;
+            lastDigit = digit;
         }
         
-        return int.Parse($"{firstNum}{lastNum}");
+        return int.Parse($"{firstDigit}{lastDigit}");
     }
 
     private static string ReplaceTextualDigits(string s)
