@@ -16,10 +16,8 @@ public class Puzzle2 : PuzzleBase<IEnumerable<string>, int, int>
         
         foreach (var sampleData in samples)
         {
-            var colourCounts = sampleData.Trim().Split(',');
-
             var sample = new Sample();
-            foreach (var colourCount in colourCounts)
+            foreach (var colourCount in sampleData.Trim().Split(','))
             {
                 var count = int.Parse(colourCount.Trim().Split(' ')[0].Trim());
                 var color = colourCount.Trim().Split(' ')[1].Trim();
