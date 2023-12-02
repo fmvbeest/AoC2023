@@ -3,7 +3,7 @@
 public class Puzzle2 : PuzzleBase<IEnumerable<string>, int, int>
 {
     protected override string Filename => "Input/puzzle-input-02.txt";
-    protected override string PuzzleTitle => "--- Day 2:  ---";
+    protected override string PuzzleTitle => "--- Day 2: Cube Conundrum ---";
 
     private static Game ParseGame(string gameData)
     {
