@@ -1,0 +1,33 @@
+namespace TestPuzzles;
+using {{SOLUTION}}.Puzzles;
+
+public class TestPuzzle{{DAYNUMBER-SHORT}}
+{
+    private readonly PuzzleInput _testInput = new("Input/test-input-{{DAYNUMBER-LONG}}.txt");
+    private readonly PuzzleInput _puzzleInput = new("Input/puzzle-input-{{DAYNUMBER-LONG}}.txt");
+    private readonly Puzzle{{DAYNUMBER-SHORT}} _puzzle = new();
+
+    [Fact]
+    public void TestPartOneSample()
+    {
+        Assert.Equal(0, _puzzle.PartOne(_puzzle.Preprocess(_testInput)));
+    }
+    
+    [Fact]
+    public void TestPartOneActual()
+    {
+        Assert.Equal(0, _puzzle.PartOne(_puzzle.Preprocess(_puzzleInput)));
+    }
+    
+    [Fact]
+    public void TestPartTwoSample()
+    {
+        Assert.Equal(0, _puzzle.PartTwo(_puzzle.Preprocess(_testInput)));
+    }
+    
+    [Fact]
+    public void TestPartTwoActual()
+    {
+        Assert.Equal(0, _puzzle.PartTwo(_puzzle.Preprocess(_puzzleInput)));
+    }
+}

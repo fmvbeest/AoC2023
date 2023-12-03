@@ -39,6 +39,5 @@ public static class Program
           {
                instance?.Run();
           }
-          
      }
 }
