@@ -1,4 +1,5 @@
 ﻿using AoC2023.Util;
+using AoC2023.Util.PartNumbers;
 
 namespace AoC2023.Puzzles;
 
@@ -6,142 +7,95 @@ public class Puzzle3 : PuzzleBase<IEnumerable<string>, int, int>
 {
     protected override string Filename => "Input/puzzle-input-03.txt";
     protected override string PuzzleTitle => "--- Day 3: Gear Ratios ---";
-    
-    public override int PartOne(IEnumerable<string> input)
+
+    private static Engine ParseInput(IEnumerable<string> input, int part = 1)
     {
-        var numbers = new List<(int, IEnumerable<Coordinate>)>();
+        var numbers = new List<PartNumber>();
         var symbols = new List<Coordinate>();
-
+        
+        var tempNumber = new TempPartNumber();
         var row = 0;
-
         foreach (var line in input)
         {
-            var tmp = "";
-            var tmpCoords = new List<Coordinate>();
             var index = 0;
             foreach (var c in line)
             {
                 if (c >= '0' && c <= '9')
                 {
-                    tmp += c;
-                    tmpCoords.Add((index, row));
+                    tempNumber.Update(c, (index, row));
+                    index++;
+                    continue;
                 }
-                else
+                if (!tempNumber.IsEmpty())
                 {
-                    if (!string.IsNullOrEmpty(tmp))
-                    {
-                        numbers.Add((int.Parse(tmp), tmpCoords));
-                        tmp = "";
-                        tmpCoords = new List<Coordinate>();
-                    }
+                    numbers.Add(tempNumber.Finish());
+                }
 
-                    if (c != '.')
+                if (c != '.')
+                {
+                    if (part != 1 && c != '*')
                     {
-                        symbols.Add((index, row));
+                        continue;
                     }
+                    symbols.Add((index, row));
                 }
                 index++;
             }
 
-            if (!string.IsNullOrEmpty(tmp))
+            if (!tempNumber.IsEmpty())
             {
-                numbers.Add((int.Parse(tmp), tmpCoords));
+                numbers.Add(tempNumber.Finish());
             }
             row++;
         }
+
+        return new Engine(numbers, symbols);
+    }
+    
+    public override int PartOne(IEnumerable<string> input)
+    {
+        var engine = ParseInput(input);
         
         var sum = 0;
         
-        foreach (var (number, coordinates) in numbers)
+        foreach (var partNumber in engine.PartNumbers())
         {
             var allNeighbours = new List<Coordinate>(); 
-            foreach (var coordinate in coordinates)
+            foreach (var coordinate in partNumber.Coordinates())
             {
                 allNeighbours.AddRange(coordinate.Neighbours());
             }
 
-            if (allNeighbours.Any(neighbour => symbols.Contains(neighbour)))
+            if (allNeighbours.Distinct().Any(neighbour => engine.SymbolCoordinates().Contains(neighbour)))
             {
-                sum += number;
+                sum += partNumber.Number;
             }
         }
-        
         
         return sum;
     }
 
     public override int PartTwo(IEnumerable<string> input)
     {
-        var numbers = new List<(int, IEnumerable<Coordinate>)>();
-        var symbols = new List<Coordinate>();
-        
-        var possibleGears = new List<Coordinate>();
-
-        var row = 0;
-
-        foreach (var line in input)
-        {
-            var tmp = "";
-            var tmpCoords = new List<Coordinate>();
-            var index = 0;
-            foreach (var c in line)
-            {
-                if (c >= '0' && c <= '9')
-                {
-                    tmp += c;
-                    tmpCoords.Add((index, row));
-                }
-                else
-                {
-                    if (!string.IsNullOrEmpty(tmp))
-                    {
-                        var number = int.Parse(tmp);
-                        numbers.Add((number, tmpCoords));
-                        tmp = "";
-                        tmpCoords = new List<Coordinate>();
-                    }
-
-                    if (c != '.')
-                    {
-                        symbols.Add((index, row));
-                        if (c == '*')
-                        {
-                            possibleGears.Add((index, row));
-                        }
-                    }
-
-                    
-                }
-                index++;
-            }
-
-            if (!string.IsNullOrEmpty(tmp))
-            {
-                numbers.Add((int.Parse(tmp), tmpCoords));
-            }
-            row++;
-        }
+        var engine = ParseInput(input);
 
         var sum = 0;
 
-        foreach (var possibleGear in possibleGears)
+        foreach (var gear in engine.SymbolCoordinates())
         {
-            var gearNeighbours = possibleGear.Neighbours();
-
             var neighbourNumbers = new List<int>();
             
-            foreach (var gearNeighbour in gearNeighbours)
+            foreach (var gearNeighbour in gear.Neighbours())
             {
-                var x = numbers.Where(tuple => tuple.Item2.Contains(gearNeighbour)).Select(tuple => tuple.Item1);
-
-                neighbourNumbers.AddRange(x);
+                neighbourNumbers.AddRange(engine.PartNumbers()
+                    .Where(p => p.Coordinates().Contains(gearNeighbour))
+                    .Select(p => p.Number));
             }
 
-            var y = neighbourNumbers.Distinct();
-            if (y.Count() == 2)
+            var gearNumbers = neighbourNumbers.Distinct().ToArray();
+            if (gearNumbers.Length == 2)
             {
-                var p = y.First() * y.Last();
-                sum += p;
+                sum += gearNumbers[0] * gearNumbers[1];
             }
         }
         
