@@ -25,17 +25,15 @@ public class Puzzle1 : PuzzleBase<IEnumerable<string>, int, int>
 
     private static string ReplaceTextualDigits(string s)
     {
-        s = s.Replace("one", "o1e");
-        s = s.Replace("two", "t2o");
-        s = s.Replace("three", "t3e");
-        s = s.Replace("four", "f4r");
-        s = s.Replace("five", "f5e");
-        s = s.Replace("six", "s6x");
-        s = s.Replace("seven", "s7n");
-        s = s.Replace("eight", "e8t");
-        s = s.Replace("nine", "n9e");
-        
-        return s;
+        return s.Replace("one", "o1e")
+            .Replace("two", "t2o")
+            .Replace("three", "t3e")
+            .Replace("four", "f4r")
+            .Replace("five", "f5e")
+            .Replace("six", "s6x")
+            .Replace("seven", "s7n")
+            .Replace("eight", "e8t")
+            .Replace("nine", "n9e");
     }
     
     public override int PartOne(IEnumerable<string> input)
