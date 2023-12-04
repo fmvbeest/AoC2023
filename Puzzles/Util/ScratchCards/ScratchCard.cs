@@ -3,23 +3,13 @@
 public class ScratchCard
 {
     public int Id { get; init; }
-
-    private readonly int[] _winningNumbers;
-    private readonly int[] _cardNumbers;
+    public int MatchingNumberCount { get; }
 
     public ScratchCard(IEnumerable<int> winningNumbers, IEnumerable<int> cardNumbers)
     {
-        _winningNumbers = winningNumbers.ToArray();
-        _cardNumbers = cardNumbers.ToArray();
-    }
+        var winningNumbers1 = winningNumbers.ToArray();
+        var cardNumbers1 = cardNumbers.ToArray();
 
-    public IEnumerable<int> WinningNumbers()
-    {
-        return _winningNumbers;
-    }
-        
-    public IEnumerable<int> CardNumbers()
-    {
-        return _cardNumbers;
+        MatchingNumberCount = winningNumbers1.Intersect(cardNumbers1).Count();
     }
 }

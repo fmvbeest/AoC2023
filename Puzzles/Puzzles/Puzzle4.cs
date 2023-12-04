@@ -7,77 +7,55 @@ public class Puzzle4 : PuzzleBase<IEnumerable<string>, int, int>
     protected override string Filename => "Input/puzzle-input-04.txt";
     protected override string PuzzleTitle => "--- Day 4: Scratchcards ---";
 
-    private static int ParseCard(string card)
+    private static ScratchCard ParseCard(string cardData)
     {
-        var parts = card.Split(':')[1].Trim();
-        var winningNumbers = parts.Split('|')[0].Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse);
-        var cardNumbers = parts.Split('|')[1].Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse);
-
-        var hits = winningNumbers.Count(number => cardNumbers.Contains(number));
+        var data = cardData.Split(':');
+        var cardNumber = int.Parse(data[0].Replace("Card", string.Empty).Trim());
+        var numbers = data[1].Split('|');
+        var winningNumbers = numbers[0].Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse);
+        var ownNumbers = numbers[1].Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse);
         
-        return hits == 0 ? 0 : Convert.ToInt32(Math.Pow(2, hits - 1));
+        return new ScratchCard(winningNumbers, ownNumbers) { Id = cardNumber };
     }
     
-    private static int ParseCards(IEnumerable<string> input)
+    private static int CalculateCardScore(string card)
     {
-        var cardData = input.ToArray();
-        var cards = new Dictionary<int, ScratchCard>();
-
-        foreach (var card in cardData)
-        {
-            var data = card.Split(':');
-            var cardNumber = int.Parse(data[0].Split(' ', StringSplitOptions.RemoveEmptyEntries)[1]);
-            var parts = data[1].Trim();
-            var winningNumbers = parts.Split('|')[0].Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse);
-            var ownNumbers = parts.Split('|')[1].Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse);
-
-            var parsedCard = new ScratchCard(winningNumbers, ownNumbers) { Id = cardNumber };
-            cards.Add(parsedCard.Id, parsedCard);
-        }
-
-        var cardNumbers = new List<int>();
-
-        var toCheck = new List<ScratchCard>();
+        var parsedCard = ParseCard(card);
         
-        foreach (var (cardNumber, card) in cards)
-        {
-            cardNumbers.Add(cardNumber);
-            var hits = card.WinningNumbers().Count(winningNumber => card.CardNumbers().Contains(winningNumber));
-
-            if (hits <= 0) continue;
-            
-            var newCardNumbers = Enumerable.Range(cardNumber + 1, hits);
-            toCheck.AddRange(newCardNumbers.Select(number => cards[number]));
-        }
-
-        while (toCheck.Any())
-        {
-            var cardsToCheck = toCheck.ToList();
-            toCheck.Clear();
-            
-            foreach (var card in cardsToCheck)
-            {
-                cardNumbers.Add(card.Id);
-                var hits = card.WinningNumbers().Count(winningNumber => card.CardNumbers().Contains(winningNumber));
-
-                if (hits <= 0) continue;
-                
-                var newCardNumbers = Enumerable.Range(card.Id + 1, hits);
-                toCheck.AddRange(newCardNumbers.Select(number => cards[number]));
-            }
-        }
-
-        return cardNumbers.Count;
+        return parsedCard.MatchingNumberCount == 0 ? 0 
+            : Convert.ToInt32(Math.Pow(2, parsedCard.MatchingNumberCount - 1));
     }
     
     public override int PartOne(IEnumerable<string> input)
     {
-        return input.Sum(ParseCard);
+        return input.Sum(CalculateCardScore);
     }
 
     public override int PartTwo(IEnumerable<string> input)
     {
-        return ParseCards(input);
+        var cardResults = input.ToArray().Select(ParseCard)
+            .ToDictionary(card => card.Id, 
+                card => Enumerable.Range(card.Id + 1, card.MatchingNumberCount).ToArray());;
+        
+        var numEvaluatedCards = cardResults.Keys.Count;
+        var cardsToCheck = cardResults.Keys.ToList();
+
+        while (cardsToCheck.Any())
+        {
+            var toCheck = cardsToCheck.ToList();
+            cardsToCheck.Clear();
+
+            foreach (var cardId in toCheck)
+            {
+                if (cardResults.TryGetValue(cardId, out var newCards))
+                {
+                    cardsToCheck.AddRange(newCards);
+                    numEvaluatedCards += newCards.Length;
+                }
+            }
+        }
+
+        return numEvaluatedCards;
     }
     
     public override IEnumerable<string> Preprocess(IPuzzleInput input, int part = 1)
