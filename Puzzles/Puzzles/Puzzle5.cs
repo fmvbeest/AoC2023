@@ -59,7 +59,6 @@ public class Puzzle5 : PuzzleBase<IEnumerable<IEnumerable<string>>, long, long>
         var seeds = ParseSeeds(groupedData[0].First());
         
         var minLocation = long.MaxValue;
-        
         foreach (var seed in seeds)
         {
             var value = seed;
@@ -76,7 +75,7 @@ public class Puzzle5 : PuzzleBase<IEnumerable<IEnumerable<string>>, long, long>
             }
             minLocation = Math.Min(minLocation, value);
         }
-
+        
         return minLocation;
     }
 
@@ -92,8 +91,7 @@ public class Puzzle5 : PuzzleBase<IEnumerable<IEnumerable<string>>, long, long>
         var terminate = false;
         while (!terminate)
         {
-            minLocation++;
-            var value = minLocation;
+            var value = ++minLocation;
             foreach (var categoryMap in categoryMaps)
             {
                 foreach (var mapRange in categoryMap)
