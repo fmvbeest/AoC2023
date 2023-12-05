@@ -84,8 +84,7 @@ public class Puzzle5 : PuzzleBase<IEnumerable<IEnumerable<string>>, long, long>
         var groupedData = input.ToArray();
         var categoryMaps = groupedData.Skip(1).Select(mapData => ParseMapData(mapData, part:2)).Reverse().ToArray();
         var seeds = ParseSeeds(groupedData[0].First()).ToArray();
-        var seedRanges = seeds.Where((e, i) => i % 2 == 0)
-            .Zip(seeds.Where((e, i) => i % 2 == 1), (a, b) => (a , a + b - 1)).ToArray();
+        var seedRanges = seeds.Chunk(2).Select(x => (x[0], x[1] + x[0] - 1)).ToArray();
         
         var minLocation = -1L;
         var terminate = false;
