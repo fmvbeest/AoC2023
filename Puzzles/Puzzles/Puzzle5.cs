@@ -1,17 +1,27 @@
 using System.Collections;
+using AoC2023.Util.Fertilizer;
 
 namespace AoC2023.Puzzles;
 
-public class Puzzle5 : PuzzleBase<IEnumerable<IEnumerable<string>>, long, int>
+public class Puzzle5 : PuzzleBase<IEnumerable<IEnumerable<string>>, long, long>
 {
     protected override string Filename => "Input/puzzle-input-05.txt";
     protected override string PuzzleTitle => "--- Day 5: If You Give A Seed A Fertilizer ---";
 
-    private IEnumerable<MapRange> ParseMapData(IEnumerable<string> mapData)
+    private static IEnumerable<long> ParseSeeds(string seedData)
     {
-        var map = new List<MapRange>();
+        return seedData.Split(':', StringSplitOptions.RemoveEmptyEntries)[1]
+            .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+            .Select(long.Parse);
+    }
+    
+    private static IEnumerable<MapRange> ParseMapData(IEnumerable<string> mapData, int part = 1)
+    {
         mapData = mapData.ToArray();
-
+        var map = new List<MapRange>();
+        var source = part % 2;
+        var target = part - 1;
+        
         foreach (var line in mapData)
         {
             if (line.Trim().EndsWith(":") || string.IsNullOrEmpty(line)) continue;
@@ -21,32 +31,41 @@ public class Puzzle5 : PuzzleBase<IEnumerable<IEnumerable<string>>, long, int>
 
             map.Add(new MapRange()
             {
-                Start = rangeData[1],
-                End = rangeData[1] + rangeData[2] - 1,
-                Offset = rangeData[0] - rangeData[1]
+                Start = rangeData[source],
+                End = rangeData[source] + rangeData[2] - 1,
+                Offset = rangeData[target] - rangeData[source]
             });
         }
 
         return map;
     }
+
+    private static bool IsValidSeed(long value, IEnumerable<(long, long)> seedRanges)
+    {
+        foreach (var (start, end) in seedRanges)
+        {
+            if (value >= start && value <= end)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
     
-    private long ParseInput(IEnumerable<IEnumerable<string>> input, int part = 1)
+    public override long PartOne(IEnumerable<IEnumerable<string>> input)
     {
         var groupedData = input.ToArray();
-
-        var seeds = groupedData[0].First()
-            .Split(':', StringSplitOptions.RemoveEmptyEntries)[1]
-            .Split(' ', StringSplitOptions.RemoveEmptyEntries)
-            .Select(long.Parse);
+        var categoryMaps = groupedData.Skip(1).Select(mapData => ParseMapData(mapData)).ToArray();
+        var seeds = ParseSeeds(groupedData[0].First());
         
         var minLocation = long.MaxValue;
-
+        
         foreach (var seed in seeds)
         {
             var value = seed;
-            foreach (var categoryMap in groupedData.Skip(1))
+            foreach (var categoryMap in categoryMaps)
             {
-                foreach (var mapRange in ParseMapData(categoryMap))
+                foreach (var mapRange in categoryMap)
                 {
                     if (mapRange.InRange(value))
                     {
@@ -60,28 +79,37 @@ public class Puzzle5 : PuzzleBase<IEnumerable<IEnumerable<string>>, long, int>
 
         return minLocation;
     }
-    
-    public override long PartOne(IEnumerable<IEnumerable<string>> input)
-    {
-        return ParseInput(input);
-    }
 
-    public override int PartTwo(IEnumerable<IEnumerable<string>> input)
+    public override long PartTwo(IEnumerable<IEnumerable<string>> input)
     {
-        return 0;
-    }
-
-    private class MapRange
-    {
-        public long Start { get; set; }
-        public long End { get; set; }
+        var groupedData = input.ToArray();
+        var categoryMaps = groupedData.Skip(1).Select(mapData => ParseMapData(mapData, part:2)).Reverse().ToArray();
+        var seeds = ParseSeeds(groupedData[0].First()).ToArray();
+        var seedRanges = seeds.Where((e, i) => i % 2 == 0)
+            .Zip(seeds.Where((e, i) => i % 2 == 1), (a, b) => (a , a + b - 1)).ToArray();
         
-        public long Offset { get; set; }
-
-        public bool InRange(long x)
+        var minLocation = -1L;
+        var terminate = false;
+        while (!terminate)
         {
-            return x >= Start && x <= End;
+            minLocation++;
+            var value = minLocation;
+            foreach (var categoryMap in categoryMaps)
+            {
+                foreach (var mapRange in categoryMap)
+                {
+                    if (mapRange.InRange(value))
+                    {
+                        value += mapRange.Offset;
+                        break;
+                    }
+                }
+            }
+
+            terminate = IsValidSeed(value, seedRanges);
         }
+
+        return minLocation;
     }
     
     public override IEnumerable<IEnumerable<string>> Preprocess(IPuzzleInput input, int part = 1)
