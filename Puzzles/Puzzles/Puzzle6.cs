@@ -44,7 +44,6 @@ public class Puzzle6 : PuzzleBase<IEnumerable<string>, int, int>
         return x2 - x1 - 1;
     }
     
-    
     public override int PartOne(IEnumerable<string> input)
     {
         return ParseRaces(input).Aggregate(1, (current, race) => current * Wins(race));
