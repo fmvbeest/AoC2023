@@ -1,6 +1,6 @@
 namespace AoC2023.Puzzles;
 
-public class Puzzle6 : PuzzleBase<IEnumerable<string>, int, long>
+public class Puzzle6 : PuzzleBase<IEnumerable<string>, int, int>
 {
     protected override string Filename => "Input/puzzle-input-06.txt";
     protected override string PuzzleTitle => "--- Day 6: Wait For It ---";
@@ -29,41 +29,30 @@ public class Puzzle6 : PuzzleBase<IEnumerable<string>, int, long>
 
         return new Race { Duration = time, Record = distance };
     }
+
+    private static int Wins(Race race)
+    {
+        var a = -1;
+        var b = race.Duration;
+        var c = race.Record * - 1;
+
+        var d = b * b - 4 * a * c;
+
+        var x1 = Convert.ToInt32(Math.Floor((-b + Math.Sqrt(d)) / (2 * a)));
+        var x2 = Convert.ToInt32(Math.Ceiling((-b - Math.Sqrt(d)) / (2 * a)));
+        
+        return x2 - x1 - 1;
+    }
+    
     
     public override int PartOne(IEnumerable<string> input)
     {
-        var result = 1;
-
-        foreach (var race in ParseRaces(input))
-        {
-            var wins = 0;
-            for (var i = 0; i <= race.Duration; i++)
-            {
-                if ((race.Duration - i) * i > race.Record)
-                {
-                    wins++;
-                }
-            }
-            result *= wins;
-        }
-        
-        return result;
+        return ParseRaces(input).Aggregate(1, (current, race) => current * Wins(race));
     }
 
-    public override long PartTwo(IEnumerable<string> input)
+    public override int PartTwo(IEnumerable<string> input)
     {
-        var race = ParseSingleRace(input);
-        
-        var wins = 0;
-        for (var i = 0; i <= race.Duration; i++)
-        {
-            if ((race.Duration - i) * i > race.Record)
-            {
-                wins++;
-            }
-        }
-
-        return wins;
+        return Wins(ParseSingleRace(input));
     }
 
     private class Race
