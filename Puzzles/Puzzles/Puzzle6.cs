@@ -34,7 +34,7 @@ public class Puzzle6 : PuzzleBase<IEnumerable<string>, int, int>
     {
         var a = -1;
         var b = race.Duration;
-        var c = race.Record * - 1;
+        var c = -race.Record;
 
         var d = b * b - 4 * a * c;
 
