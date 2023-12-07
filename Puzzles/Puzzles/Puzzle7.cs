@@ -28,9 +28,12 @@ public class Puzzle7 : PuzzleBase<IEnumerable<string>, int, int>
             1 => CamelType.FiveOfAKind,
             5 => hand.Contains('J') ? CamelType.OnePair : CamelType.HighCard,
             4 => hand.Contains('J') ? CamelType.ThreeOfAKind : CamelType.OnePair,
-            2 when groups.Any(g => g.Count() == 4) => hand.Contains('J') ? CamelType.FiveOfAKind : CamelType.FourOfAKind,
-            2 when groups.Any(g => g.Count() == 3) => hand.Contains('J') ? CamelType.FiveOfAKind : CamelType.FullHouse,
-            3 when groups.Any(g => g.Count() == 3) => hand.Contains('J') ? CamelType.FourOfAKind : CamelType.ThreeOfAKind,
+            2 when groups.Any(g => g.Count() == 4) => hand.Contains('J') 
+                ? CamelType.FiveOfAKind : CamelType.FourOfAKind,
+            2 when groups.Any(g => g.Count() == 3) => hand.Contains('J') 
+                ? CamelType.FiveOfAKind : CamelType.FullHouse,
+            3 when groups.Any(g => g.Count() == 3) => hand.Contains('J') 
+                ? CamelType.FourOfAKind : CamelType.ThreeOfAKind,
             _ => hand.Count(c => c == 'J') switch
             {
                 2 => CamelType.FourOfAKind,
@@ -44,7 +47,8 @@ public class Puzzle7 : PuzzleBase<IEnumerable<string>, int, int>
     {
         var data = line.Split(' ');
 
-        return new CamelHand(data[0].Trim(), ParseHandType(data[0], jokerRules), jokerRules) { Bid = int.Parse(data[1]) };
+        return new CamelHand(data[0], ParseHandType(data[0], jokerRules), jokerRules) 
+            { Bid = int.Parse(data[1]) };
     }
     
     public override int PartOne(IEnumerable<string> input)
