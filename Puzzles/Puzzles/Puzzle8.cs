@@ -7,7 +7,7 @@ public class Puzzle8 : PuzzleBase<IEnumerable<string>, int, long>
     protected override string Filename => "Input/puzzle-input-08.txt";
     protected override string PuzzleTitle => "--- Day 8: Haunted Wasteland ---";
 
-    private Dictionary<string, (string Left, string Right)> ParseMaps(IEnumerable<string> input)
+    private static Dictionary<string, (string, string)> ParseMaps(IEnumerable<string> input)
     {
         var maps = new Dictionary<string, (string, string)>();
 
