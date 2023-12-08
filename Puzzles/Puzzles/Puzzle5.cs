@@ -1,4 +1,3 @@
-using System.Collections;
 using AoC2023.Util.Fertilizer;
 
 namespace AoC2023.Puzzles;

@@ -57,9 +57,7 @@ public class Puzzle8 : PuzzleBase<IEnumerable<string>, int, long>
     public override int PartOne(IEnumerable<string> input)
     {
         input = input.ToArray();
-        
         var choicePattern = input.ToArray().First();
-
         var maps = ParseMaps(input.Skip(2));
 
         return TraverseToEnd("AAA", "ZZZ", choicePattern, maps);
@@ -72,10 +70,10 @@ public class Puzzle8 : PuzzleBase<IEnumerable<string>, int, long>
         var maps = ParseMaps(input.Skip(2));
         var startPositions = maps.Keys.Where(key => key.EndsWith("A")).ToList();
 
-        var stepsList = startPositions.Select(start => TraverseToEnd(start, "Z", choicePattern, maps))
+        var steps = startPositions.Select(start => TraverseToEnd(start, "Z", choicePattern, maps))
             .Select(steps => (long)steps).ToList();
 
-        return stepsList.Aggregate(1L, Functions.LeastCommonMultiple);
+        return steps.Aggregate(1L, Functions.LeastCommonMultiple);
     }
     
     public override IEnumerable<string> Preprocess(IPuzzleInput input, int part = 1)
