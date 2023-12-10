@@ -3,83 +3,37 @@ namespace AoC2023.Puzzles;
 public class Puzzle9 : PuzzleBase<IEnumerable<string>, int, int>
 {
     protected override string Filename => "Input/puzzle-input-09.txt";
-    protected override string PuzzleTitle => "--- Day 9: {{TITLE}} ---";
+    protected override string PuzzleTitle => "--- Day 9: Mirage Maintenance ---";
 
-    private int ParseHistory(string s)
+    private static int ParseRecursive(int[] sequence)
     {
-        var history = s.Split(' ', StringSplitOptions.TrimEntries).Select(int.Parse).ToArray();
-
-        var enumerable = history.ToArray();
-
-        var diffSequences = new List<int[]>();
-        diffSequences.Add(history.ToArray());
+        if (sequence.Distinct().Count() == 1)
+        {
+            return sequence.Last();
+        }
+        var diffSequence = new List<int>();
+        for (var i = 1; i < sequence.Length; i++)
+        {
+            diffSequence.Add(sequence[i] - sequence[i-1]);
+        }
         
-        while (enumerable.Distinct().Count() > 1)
-        {
-            var array = enumerable.ToArray();
-            var tmp = new List<int>();
-            for (var i = 1; i < array.Length; i++)
-            {
-                tmp.Add(array[i] - array[i-1]);
-            }
-
-            enumerable = tmp.ToArray();
-            diffSequences.Add(tmp.ToArray());
-        }
-
-        var store = 0;
-         
-        diffSequences.Reverse();
-        foreach (var sequence in diffSequences)
-        {
-            store += sequence.Last();
-        }
-
-        return store;
+        return sequence.Last() + ParseRecursive(diffSequence.ToArray());
     }
-    
-    private int ParseHistory2(string s)
+
+    private static int[] ParseHistory(string input)
     {
-        var history = s.Split(' ', StringSplitOptions.TrimEntries).Select(int.Parse).ToArray();
-
-        var enumerable = history.ToArray();
-
-        var diffSequences = new List<int[]>();
-        diffSequences.Add(history.ToArray());
-        
-        while (enumerable.Distinct().Count() > 1)
-        {
-            var array = enumerable.ToArray();
-            var tmp = new List<int>();
-            for (var i = 1; i < array.Length; i++)
-            {
-                tmp.Add(array[i] - array[i-1]);
-            }
-
-            enumerable = tmp.ToArray();
-            diffSequences.Add(tmp.ToArray());
-        }
-
-        var store = 0;
-
-        diffSequences.Reverse();
-        
-        foreach (var sequence in diffSequences)
-        {
-            store = (sequence.First() - store);
-        }
-
-        return store;
+        return input.Split(' ', StringSplitOptions.TrimEntries).Select(int.Parse).ToArray();
     }
     
     public override int PartOne(IEnumerable<string> input)
     {
-        return input.Sum(ParseHistory);
+        return input.Sum(line => ParseRecursive(ParseHistory(line)));
     }
 
     public override int PartTwo(IEnumerable<string> input)
     {
-        return input.Sum(ParseHistory2);
+        return input.Select(ParseHistory).Select(history => 
+            ParseRecursive(history.Reverse().ToArray())).ToList().Sum();
     }
     
     public override IEnumerable<string> Preprocess(IPuzzleInput input, int part = 1)
