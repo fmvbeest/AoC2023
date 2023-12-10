@@ -53,6 +53,33 @@ public class Puzzle10 : PuzzleBase<IEnumerable<string>, int, int>
         };
     }
 
+
+    private static IEnumerable<Pipe> GetPipeLoop(Pipe startPipe, Dictionary<Coordinate, Pipe> pipes)
+    {
+        // Traverse Pipeloop
+        var previous = startPipe;
+        var current = pipes[startPipe.ConnectsTo.First()];
+        var pipeLoop = new List<Pipe> { startPipe };
+        
+        while (!current.Location.Equals(startPipe.Location))
+        {
+            if (current.ConnectsTo.Contains(previous.Location))
+            {
+                pipeLoop.Add(current);
+                
+                var nextLocation = current.ConnectsTo.Single(c => !c.Equals(previous.Location));
+                previous = current;
+                current = pipes[nextLocation];
+            }
+            else
+            {
+                throw new ApplicationException("Current does not connect to previous");
+            }
+        }
+
+        return pipeLoop;
+    }
+
     public override int PartOne(IEnumerable<string> input)
     {
         var pipes = ParseInput(input, out var startPosition);
@@ -63,28 +90,7 @@ public class Puzzle10 : PuzzleBase<IEnumerable<string>, int, int>
         var startPipe = new Pipe(startPosition, connectsTo);
         pipes[startPipe.Location] = startPipe;
         
-        // Traverse Pipeloop
-        var previous = startPipe;
-        var current = pipes[startPipe.ConnectsTo.First()];
-        var steps = 1;
-        
-        while (!current.Location.Equals(startPipe.Location))
-        {
-            if (current.ConnectsTo.Contains(previous.Location))
-            {
-                var nextLocation = current.ConnectsTo.Single(c => !c.Equals(previous.Location));
-                previous = current;
-                current = pipes[nextLocation];
-                steps++;
-            }
-            else
-            {
-                throw new ApplicationException("Current does not connect to previous");
-            }
-        }
-            
-        
-        return steps/2;
+        return GetPipeLoop(startPipe, pipes).Count()/2;
     }
 
     public override int PartTwo(IEnumerable<string> input)
@@ -92,7 +98,7 @@ public class Puzzle10 : PuzzleBase<IEnumerable<string>, int, int>
         return 0;
     }
 
-    public class Pipe
+    private class Pipe
     {
         public readonly Coordinate Location;
         public readonly Coordinate[] ConnectsTo;
