@@ -6,11 +6,11 @@ public class CamelHand : IComparable<CamelHand>
 
     private readonly bool _jokerRules;
 
-    private readonly CamelType _type;
+    private readonly HandType _type;
 
     private readonly string _hand;
 
-    public CamelHand(string hand, CamelType type, bool jokerRules = false)
+    public CamelHand(string hand, HandType type, bool jokerRules = false)
     {
         _hand = hand;
         _type = type;

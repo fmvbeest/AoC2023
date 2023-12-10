@@ -1,6 +1,6 @@
 ﻿namespace AoC2023.Util.CamelCards;
 
-public enum CamelType
+public enum HandType
 {
     HighCard,
     OnePair,

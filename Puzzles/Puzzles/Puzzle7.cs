@@ -7,38 +7,38 @@ public class Puzzle7 : PuzzleBase<IEnumerable<string>, int, int>
     protected override string Filename => "Input/puzzle-input-07.txt";
     protected override string PuzzleTitle => "--- Day 7: Camel Cards ---";
 
-    private static CamelType ParseHandType(string hand, bool jokerRules = false)
+    private static HandType ParseHandType(string hand, bool jokerRules = false)
     {
         var groups = hand.GroupBy(c => c).ToList();
 
         if (!jokerRules)
             return groups.Count switch
             {
-                1 => CamelType.FiveOfAKind,
-                5 => CamelType.HighCard,
-                4 => CamelType.OnePair,
-                2 when groups.Any(g => g.Count() == 4) => CamelType.FourOfAKind,
-                2 when groups.Any(g => g.Count() == 3) => CamelType.FullHouse,
-                3 when groups.Any(g => g.Count() == 3) => CamelType.ThreeOfAKind,
-                _ => CamelType.TwoPair
+                1 => HandType.FiveOfAKind,
+                5 => HandType.HighCard,
+                4 => HandType.OnePair,
+                2 when groups.Any(g => g.Count() == 4) => HandType.FourOfAKind,
+                2 when groups.Any(g => g.Count() == 3) => HandType.FullHouse,
+                3 when groups.Any(g => g.Count() == 3) => HandType.ThreeOfAKind,
+                _ => HandType.TwoPair
             };
         
         return groups.Count switch
         {
-            1 => CamelType.FiveOfAKind,
-            5 => hand.Contains('J') ? CamelType.OnePair : CamelType.HighCard,
-            4 => hand.Contains('J') ? CamelType.ThreeOfAKind : CamelType.OnePair,
+            1 => HandType.FiveOfAKind,
+            5 => hand.Contains('J') ? HandType.OnePair : HandType.HighCard,
+            4 => hand.Contains('J') ? HandType.ThreeOfAKind : HandType.OnePair,
             2 when groups.Any(g => g.Count() == 4) => 
-                hand.Contains('J') ? CamelType.FiveOfAKind : CamelType.FourOfAKind,
+                hand.Contains('J') ? HandType.FiveOfAKind : HandType.FourOfAKind,
             2 when groups.Any(g => g.Count() == 3) => 
-                hand.Contains('J') ? CamelType.FiveOfAKind : CamelType.FullHouse,
+                hand.Contains('J') ? HandType.FiveOfAKind : HandType.FullHouse,
             3 when groups.Any(g => g.Count() == 3) => 
-                hand.Contains('J') ? CamelType.FourOfAKind : CamelType.ThreeOfAKind,
+                hand.Contains('J') ? HandType.FourOfAKind : HandType.ThreeOfAKind,
             _ => hand.Count(c => c == 'J') switch
             {
-                2 => CamelType.FourOfAKind,
-                1 => CamelType.FullHouse,
-                _ => CamelType.TwoPair
+                2 => HandType.FourOfAKind,
+                1 => HandType.FullHouse,
+                _ => HandType.TwoPair
             }
         };
     }
