@@ -9,10 +9,10 @@ public class TestPuzzle10
     [Fact]
     public void TestPartOneSample()
     {
-        Assert.Equal(4, _puzzle.PartOne(_puzzle.Preprocess(new PuzzleInput("Input/test-input-10a1.txt"))));
-        Assert.Equal(4, _puzzle.PartOne(_puzzle.Preprocess(new PuzzleInput("Input/test-input-10a2.txt"))));
-        Assert.Equal(8, _puzzle.PartOne(_puzzle.Preprocess(new PuzzleInput("Input/test-input-10b1.txt"))));
-        Assert.Equal(8, _puzzle.PartOne(_puzzle.Preprocess(new PuzzleInput("Input/test-input-10b1.txt"))));
+        Assert.Equal(4, _puzzle.PartOne(_puzzle.Preprocess(new PuzzleInput("Input/test-input-10a1i.txt"))));
+        Assert.Equal(4, _puzzle.PartOne(_puzzle.Preprocess(new PuzzleInput("Input/test-input-10a1ii.txt"))));
+        Assert.Equal(8, _puzzle.PartOne(_puzzle.Preprocess(new PuzzleInput("Input/test-input-10a2i.txt"))));
+        Assert.Equal(8, _puzzle.PartOne(_puzzle.Preprocess(new PuzzleInput("Input/test-input-10a2ii.txt"))));
     }
     
     [Fact]
@@ -24,9 +24,9 @@ public class TestPuzzle10
     [Fact]
     public void TestPartTwoSample()
     {
-        Assert.Equal(4, _puzzle.PartTwo(_puzzle.Preprocess(new PuzzleInput("Input/test-input-10c1.txt"))));
-        Assert.Equal(8, _puzzle.PartTwo(_puzzle.Preprocess(new PuzzleInput("Input/test-input-10c2.txt"))));
-        Assert.Equal(10, _puzzle.PartTwo(_puzzle.Preprocess(new PuzzleInput("Input/test-input-10c3.txt"))));
+        Assert.Equal(4, _puzzle.PartTwo(_puzzle.Preprocess(new PuzzleInput("Input/test-input-10b1.txt"))));
+        Assert.Equal(8, _puzzle.PartTwo(_puzzle.Preprocess(new PuzzleInput("Input/test-input-10b2.txt"))));
+        Assert.Equal(10, _puzzle.PartTwo(_puzzle.Preprocess(new PuzzleInput("Input/test-input-10b3.txt"))));
     }
     
     [Fact]
