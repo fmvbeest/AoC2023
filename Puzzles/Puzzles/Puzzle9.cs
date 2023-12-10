@@ -11,13 +11,9 @@ public class Puzzle9 : PuzzleBase<IEnumerable<string>, int, int>
         {
             return sequence.Last();
         }
-        var diffSequence = new List<int>();
-        for (var i = 1; i < sequence.Length; i++)
-        {
-            diffSequence.Add(sequence[i] - sequence[i-1]);
-        }
         
-        return sequence.Last() + ParseRecursive(diffSequence.ToArray());
+        var diffSequence = sequence.Zip(sequence.Skip(1), (a, b) => b - a).ToArray();
+        return sequence.Last() + ParseRecursive(diffSequence);
     }
 
     private static int[] ParseHistory(string input)
@@ -33,7 +29,7 @@ public class Puzzle9 : PuzzleBase<IEnumerable<string>, int, int>
     public override int PartTwo(IEnumerable<string> input)
     {
         return input.Select(ParseHistory).Select(history => 
-            ParseRecursive(history.Reverse().ToArray())).ToList().Sum();
+            ParseRecursive(history.Reverse().ToArray())).Sum();
     }
     
     public override IEnumerable<string> Preprocess(IPuzzleInput input, int part = 1)
