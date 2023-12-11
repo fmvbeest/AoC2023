@@ -107,7 +107,7 @@ public class Coordinate : IEquatable<Coordinate>
         return list;
     }
 
-    public int ManhattanDistance(Coordinate x)
+    public long ManhattanDistance(Coordinate x)
     {
         var diff = this - x;
         return Math.Abs(diff.X) + Math.Abs(diff.Y);
