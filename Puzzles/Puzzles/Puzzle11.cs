@@ -21,18 +21,18 @@ public class Puzzle11 : PuzzleBase<IEnumerable<string>, int, long>
         {
             if (line.Distinct().Count() == 1)
             {
-                yIndices.Add(yIndex + yIndices.Count * (expandFactor-1));
+                yIndices.Add(yIndex + yIndices.Count * (expandFactor - 1));
             }
             yIndex++;
         }
 
         var transposed = input.Transpose();
         var xIndex = 0;
-        foreach (var y in transposed)
+        foreach (var x in transposed)
         {
-            if (y.Distinct().Count() == 1)
+            if (x.Distinct().Count() == 1)
             {
-                xIndices.Add(xIndex + xIndices.Count * (expandFactor-1));
+                xIndices.Add(xIndex + xIndices.Count * (expandFactor - 1));
             }
             xIndex++;
         }
@@ -58,7 +58,7 @@ public class Puzzle11 : PuzzleBase<IEnumerable<string>, int, long>
             {
                 if (xIndices.Contains(index))
                 {
-                    index += expandFactor-1;
+                    index += expandFactor - 1;
                 }
                 
                 if (c == '#')
