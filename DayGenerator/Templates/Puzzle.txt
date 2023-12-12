@@ -5,14 +5,19 @@ public class Puzzle{{DAYNUMBER-SHORT}} : PuzzleBase<IEnumerable<string>, int, in
     protected override string Filename => "Input/puzzle-input-{{DAYNUMBER-LONG}}.txt";
     protected override string PuzzleTitle => "--- Day {{DAYNUMBER-SHORT}}: {{TITLE}} ---";
 
-    public override int PartOne(IEnumerable<string> input)
+    private static int ParseInput(string s)
     {
         return 0;
+    }
+    
+    public override int PartOne(IEnumerable<string> input)
+    {
+        return input.Sum(ParseInput);
     }
 
     public override int PartTwo(IEnumerable<string> input)
     {
-        return 0;
+        return input.Sum(ParseInput);
     }
     
     public override IEnumerable<string> Preprocess(IPuzzleInput input, int part = 1)
