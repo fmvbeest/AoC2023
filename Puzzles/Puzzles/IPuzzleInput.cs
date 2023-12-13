@@ -7,4 +7,6 @@ public interface IPuzzleInput
     public string GetFirstLine();
 
     public string GetText();
+
+    public IEnumerable<IEnumerable<string>> GetChunkedInput();
 }

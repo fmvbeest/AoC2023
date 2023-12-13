@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Xml.Serialization;
 using AoC2023.Util;
 
 namespace AoC2023.Puzzles;
