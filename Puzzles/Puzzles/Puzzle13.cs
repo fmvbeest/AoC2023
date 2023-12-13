@@ -10,9 +10,8 @@ public class Puzzle13 : PuzzleBase<IEnumerable<IEnumerable<string>>, int, int>
     private static int[][] ConvertToIntGrid(IEnumerable<string> input, Dictionary<char, int> map)
     {
         var pattern = input.ToArray();
-        var x = pattern.Length;
-
-        var grid = new int[x][];
+        var grid = new int[pattern.Length][];
+        
         foreach (var (s, i) in pattern.Select((s, i) => (s, i)))
         {
             grid[i] = s.Select(c => map[c]).ToArray();
@@ -37,10 +36,8 @@ public class Puzzle13 : PuzzleBase<IEnumerable<IEnumerable<string>>, int, int>
             var b = grid[i..(i + k)];
 
             var chd = a.Select((t, j) => HammingDistance(t, b[a.Length - 1 - j])).Sum();
-            if (chd == hd)
-            {
-                return i;
-            }
+            
+            if (chd == hd) return i;
         }
 
         return 0;
